@@ -1,5 +1,5 @@
 // Color Factory game - sort colored blobs into matching bins
-const colors = { red:'rgba(255,107,107,1)', blue:'rgba(91,193,255,1)', yellow:'rgba(255,217,102,1)', green:'rgba(127,227,176,1)' };
+const colors = { red:'#ff6b6b', blue:'#5bc1ff', yellow:'#ffd966', green:'#7fe3b0' };
 const colorNames = ['red','blue','yellow','green'];
 
 let blobs = [], score = 0, level = 0, gameRunning = true;
@@ -113,17 +113,21 @@ function startLevel() {
 const binsContainer = document.getElementById('bins');
 binsContainer.innerHTML = '';
 colorNames.forEach((name, i) => {
-  const bin = document.createElement('div');
+  const bin = document.createElement('button');
   bin.className = 'bin';
   bin.dataset.color = name;
   bin.style.cssText = `
     width: 50px; height: 50px; border-radius: 50%; margin: 2px;
     cursor: pointer; border: 3px solid ${colors[name]}; background: #fff;
     display: flex; align-items: center; justify-content: center;
+    padding: 0; touch-action: manipulation;
   `;
   bin.innerHTML = `<span style="font-size: 20px;">${name === 'red' ? '🔴' :
     name === 'blue' ? '🔵' :
     name === 'yellow' ? '🟡' : '🟢'}</span>`;
+  bin.onmousedown = () => bin.style.transform = 'scale(.9)';
+  bin.onmouseup = () => bin.style.transform = 'scale(1)';
+  bin.onmouseleave = () => bin.style.transform = 'scale(1)';
   bin.onclick = () => {
     blobs.forEach(b => {
       if (b.name === name && b.falling) {
