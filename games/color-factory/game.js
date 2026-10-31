@@ -13,73 +13,50 @@ const progress = document.getElementById('prog');
 const buddyId = new URLSearchParams(location.search).get('buddy') || 'pip';
 const buddy = BUDDIES.find(b => b.id === buddyId) || BUDDIES[0];
 
-const BOUNCE_AMT = 3;
-
 function drawBin(x, color, label) {
   ctx.fillStyle = '#fff';
-  ctx.fillRect(x + 20, 300, 80, 180, 12);
+  ctx.fillRect(x + 10, 180, 50, 100, 8);
   ctx.strokeStyle = color;
-  ctx.lineWidth = 4;
-  ctx.strokeRect(x + 20, 300, 80, 180, 12);
+  ctx.lineWidth = 3;
+  ctx.strokeRect(x + 10, 180, 50, 100, 8);
   ctx.fillStyle = color;
-  ctx.fillRect(x, 270, 100, 35, 12);
+  ctx.fillRect(x, 160, 70, 24, 8);
   ctx.strokeStyle = color;
   ctx.stroke();
 }
 
 function drawBuddyAtBottom() {
-  const t = 0;
-  drawBuddy(ctx, buddy, 'happy', t);
-}
-
-function drawScene() {
-  ctx.clearRect(0, 0, cvs.width, cvs.height);
-  colorNames.forEach((name, i) => {
-    drawBin(60 + i * 130, colors[name], name);
-  });
-  drawBuddyAtBottom();
-  blobs.forEach(b => {
-    ctx.fillStyle = b.color;
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  });
+  drawBuddy(ctx, buddy, 'happy', 0);
 }
 
 function newBlob(colorName) {
   return {
-    x: 60 + Math.random() * 460,
-    y: 60,
-    r: 22,
+    x: 30 + Math.random() * 260,
+    y: 30,
+    r: 14,
     color: colors[colorName],
     name: colorName,
     falling: true,
-    vx: (Math.random() - 0.5) * 4,
-    vy: 4 + Math.random() * 3
+    vx: (Math.random() - 0.5) * 2,
+    vy: 2.5 + Math.random() * 1.5
   };
 }
 
 function showToast(msg) {
   toast.textContent = msg;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 1200);
+  setTimeout(() => toast.classList.remove('show'), 1000);
 }
 
 function gameLoop() {
   if (!gameRunning) return;
   progress.style.width = Math.min(100, level * 8) + '%';
 
-  // Clear with fading effect
   ctx.clearRect(0, 0, cvs.width, cvs.height);
 
-  // Draw bins and buddy
-  colorNames.forEach((name, i) => drawBin(60 + i * 130, colors[name], name));
+  colorNames.forEach((name, i) => drawBin(20 + i * 75, colors[name], name));
   drawBuddyAtBottom();
 
-  // Update blobs
   blobs.forEach(b => {
     b.y += b.vy;
     b.x += b.vx;
@@ -91,9 +68,8 @@ function gameLoop() {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Check if landed in bin area
-    if (b.y + b.r > 300 && b.falling) {
-      const binIdx = Math.floor((b.x - 60) / 130);
+    if (b.y + b.r > 180 && b.falling) {
+      const binIdx = Math.floor((b.x - 20) / 75);
       if (binIdx >= 0 && binIdx < 4) {
         const binColor = colorNames[binIdx];
         if (b.name === binColor) {
@@ -111,19 +87,17 @@ function gameLoop() {
         }
         b.falling = false;
       } else {
-        b.y -= 30; // bounced back
+        b.y -= 20;
       }
     }
   });
 
-  // Remove landed blobs
-  blobs = blobs.filter(b => b.falling || b.y < 300);
+  blobs = blobs.filter(b => b.falling || b.y < 180);
 
-  // Spawn new blob
   if (blobs.length === 0) {
     const color = colorNames[Math.floor(Math.random() * 4)];
     blobs.push(newBlob(color));
-    promptEl.textContent = `Can you find the ${color} bin?`;
+    promptEl.textContent = `Find the ${color} bin!`;
   }
 
   requestAnimationFrame(gameLoop);
@@ -133,29 +107,29 @@ function startLevel() {
   blobs = [];
   score = 0;
   document.getElementById('score').textContent = score;
-  promptEl.textContent = 'Ready? Color Factory starts now! 🎨';
+  promptEl.textContent = 'Sort the colors!';
 }
 
-// Clickable bins
 const binsContainer = document.getElementById('bins');
+binsContainer.innerHTML = '';
 colorNames.forEach((name, i) => {
   const bin = document.createElement('div');
   bin.className = 'bin';
   bin.dataset.color = name;
   bin.style.cssText = `
-    width: 80px; height: 80px; border-radius: 50%; margin: auto;
-    cursor: pointer; border: 4px solid ${colors[name]}; background: #fff;
+    width: 50px; height: 50px; border-radius: 50%; margin: 2px;
+    cursor: pointer; border: 3px solid ${colors[name]}; background: #fff;
     display: flex; align-items: center; justify-content: center;
   `;
-  bin.innerHTML = `<span style="font-size: 28px;">${name === 'red' ? '🔴' :
+  bin.innerHTML = `<span style="font-size: 20px;">${name === 'red' ? '🔴' :
     name === 'blue' ? '🔵' :
     name === 'yellow' ? '🟡' : '🟢'}</span>`;
   bin.onclick = () => {
     blobs.forEach(b => {
       if (b.name === name && b.falling) {
         const idx = colorNames.indexOf(name);
-        b.x = 150 + idx * 130 + 40;
-        b.y = 260;
+        b.x = 20 + idx * 75 + 25;
+        b.y = 170;
         b.falling = false;
         b.vx = 0;
         b.vy = 0;
