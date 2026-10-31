@@ -11,7 +11,7 @@ body{
   background:radial-gradient(circle at 20% 20%,var(--bg1),var(--bg2) 60%);
   min-height:100vh;
   display:flex;align-items:center;justify-content:center;
-  padding:24px;overflow-x:hidden;
+  padding:12px;overflow-x:hidden;
 }
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .ghost{opacity:.5}
@@ -31,14 +31,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .buddy-card .name{font-weight:700;margin-top:8px;font-size:18px}
 .buddy-card .tag{font-size:13px;opacity:.7;margin-top:2px}
 /* Game screen */
-.game{width:min(900px,100%);text-align:center}
+.game{width:100%;max-width:560px;text-align:center}
 .game-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .game-head h2{font-size:clamp(24px,5vw,36px)}
 .score-pill{background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 18px;font-weight:700}
-.progress{height:18px;background:#fff;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin:0 auto 22px;max-width:420px}
+.progress{height:18px;background:#fff;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin:0 auto 22px;max-width:90%;width:90%;}
 .progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--orange));transition:width .4s}
-.game-stage{position:relative;width:min(560px,100%);aspect-ratio:1/1;margin:0 auto}
-canvas{width:100%;height:100%;display:block;border-radius:24px;border:4px solid #fff;background:#fff;box-shadow:var(--shadow)}
+.game-stage{position:relative;width:100%;max-width:560px;height:auto;aspect-ratio:1/1;margin:0 auto}
+canvas{width:100%;height:100%;display:block;border-radius:24px;border:4px solid #fff;background:#fff;box-shadow:var(--shadow);object-fit:contain}
 .btn{
   display:inline-flex;align-items:center;gap:8px;
   background:var(--yellow);border:3px solid var(--ink);border-radius:999px;
